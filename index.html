@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DDS Contratistas</title>
+</head>
+<body>
+
+<h2>Documento DDS</h2>
+<a id="linkPDF" href="#" target="_blank">Abrir PDF</a>
+
+<h3>Ingrese sus datos</h3>
+<input id="nombre" placeholder="Nombre completo"><br>
+<input id="empresa" placeholder="Empresa"><br>
+
+<h3>Evaluación</h3>
+<div id="preguntas"></div>
+
+<button onclick="enviar()">Enviar</button>
+
+<script>
+const flowURL = "PEGAR_URL_FLOW_ACA";
+
+let preguntas = [
+    {
+        texto: "¿Debe usar EPP?",
+        opciones: ["Sí", "No"],
+        correcta: "Sí"
+    },
+    {
+        texto: "¿Se debe señalizar?",
+        opciones: ["Sí", "No"],
+        correcta: "Sí"
+    },
+    {
+        texto: "¿Se permite sin casco?",
+        opciones: ["Sí", "No"],
+        correcta: "No"
+    }
+];
+
+function cargarPreguntas() {
+    let contenedor = document.getElementById("preguntas");
+
+    preguntas.forEach((p, index) => {
+        let html = `<p>${p.texto}</p>`;
+        p.opciones.forEach(op => {
+            html += `<input type="radio" name="p${index}" value="${op}">${op}<br>`;
+        });
+        contenedor.innerHTML += html;
+    });
+}
+
+function calcularPuntaje() {
+    let correctas = 0;
+
+    preguntas.forEach((p, i) => {
+        let elegido = document.querySelector(`input[name="p${i}"]:checked`);
+        if (elegido && elegido.value === p.correcta) {
+            correctas++;
+        }
+    });
+
+    let puntaje = (correctas / preguntas.length) * 100;
+    return Math.round(puntaje);
+}
+
+function enviar() {
+    let nombre = document.getElementById("nombre").value;
+    let empresa = document.getElementById("empresa").value;
+
+    let puntaje = calcularPuntaje();
+    let aprobado = puntaje >= 70;
+
+    fetch(flowURL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            nombre: nombre,
+            empresa: empresa,
+            puntaje: puntaje,
+            aprobado: aprobado,
+            ordenDDS: 1
+        })
+    });
+
+    alert("Puntaje: " + puntaje + "%");
+
+    if (!aprobado) {
+        alert("Debe volver a intentarlo");
+    }
+}
+
+cargarPreguntas();
+</script>
+
+</body>
+</html>
