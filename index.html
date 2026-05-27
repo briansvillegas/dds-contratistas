@@ -1,63 +1,66 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>DDS Contratistas</title>
-</head>
-
-<body>
-
-<h1>DDS Contratistas</h1>
-
-<h3>Ingrese sus datos</h3>
-
-<input id="nombre" placeholder="Nombre completo"><br><br>
-<input id="dni" placeholder="DNI"><br><br>
-
-<button onclick="cargarDDS()">Cargar DDS</button>
-
-<hr>
-
-<!-- CONTENIDO DDS -->
-<div id="contenidoDDS" style="display:none;">
-
-    <h2 id="tituloDDS"></h2>
-
-    <a id="pdfLink" href="#" target="_blank">
-        📄 Abrir documento DDS
-    </a>
-
-</div>
-
 <script>
 
-// ==========================
-// FUNCIÓN CARGAR DDS
-// ==========================
-function cargarDDS() {
+// ==========================================
+// URL DEL FLOW (PEGAR LA REAL AQUÍ)
+// ==========================================
+const flowObtener = "https://default31211f7f7b404585b6ebb1270b0e63.e3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/e89f09c980424dbc968d85ff199b0815/triggers/manual/paths/invoke?api-version=1";
 
+// Variable global para guardar el DDS actual
+let ordenDDS = 0;
+
+
+// ==========================================
+// FUNCIÓN CARGAR DDS
+// ==========================================
+async function cargarDDS() {
+
+    // --------------------------------------
+    // Obtener datos del usuario
+    // --------------------------------------
     let nombre = document.getElementById("nombre").value;
     let dni = document.getElementById("dni").value;
 
+    // --------------------------------------
     // Validación básica
+    // --------------------------------------
     if (!nombre || !dni) {
-        alert("Ingresá nombre y DNI");
+        alert("⚠️ Debe ingresar nombre y DNI");
         return;
     }
 
-    // Simulación (todavía sin Power Automate)
-    let titulo = "DDS 1 - Uso correcto de EPP";
-    let pdf = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+    try {
 
-    // Mostrar contenido
-    document.getElementById("contenidoDDS").style.display = "block";
+        // --------------------------------------
+        // LLAMADA A POWER AUTOMATE (HTTP POST)
+        // --------------------------------------
+        let response = await fetch(flowObtener, {
 
-    // Setear datos
-    document.getElementById("tituloDDS").innerText = titulo;
-    document.getElementById("pdfLink").href = pdf;
-}
+            method: "POST",
 
-</script>
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-</body>
-</html>
+            body: JSON.stringify({
+                nombre: nombre,
+                dni: dni
+            })
+
+        });
+
+        // --------------------------------------
+        // Convertir respuesta a JSON
+        // --------------------------------------
+        let data = await response.json();
+
+        console.log("Respuesta del Flow:", data); // <-- PARA DEBUG
+
+        // --------------------------------------
+        // Guardar el orden DDS
+        // --------------------------------------
+        ordenDDS = data.ordenDDS;
+
+        // --------------------------------------
+        // Mostrar contenido DDS
+        // --------------------------------------
+
