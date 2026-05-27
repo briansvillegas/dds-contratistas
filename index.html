@@ -1,9 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DDS Contratistas</title>
+</head>
+
+<body>
+
+<h1>DDS Contratistas</h1>
+
+<h3>Ingrese sus datos</h3>
+
+<input id="nombre" placeholder="Nombre completo"><br><br>
+<input id="dni" placeholder="DNI"><br><br>
+
+<button onclick="cargarDDS()">Cargar DDS</button>
+
+<hr>
+
+<!-- CONTENIDO DDS -->
+<div id="contenidoDDS" style="display:none;">
+
+    <h2 id="tituloDDS"></h2>
+
+    <a id="pdfLink" href="#" target="_blank">
+        📄 Abrir documento DDS
+    </a>
+
+</div>
+
 <script>
 
 // ==========================================
 // URL DEL FLOW (PEGAR LA REAL AQUÍ)
 // ==========================================
-const flowObtener = "https://default31211f7f7b404585b6ebb1270b0e63.e3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/e89f09c980424dbc968d85ff199b0815/triggers/manual/paths/invoke?api-version=1";
+const flowObtener = "PEGÁ_ACÁ_LA_URL_DEL_FLOW";
 
 // Variable global para guardar el DDS actual
 let ordenDDS = 0;
@@ -63,4 +94,31 @@ async function cargarDDS() {
         // --------------------------------------
         // Mostrar contenido DDS
         // --------------------------------------
+        document.getElementById("contenidoDDS").style.display = "block";
 
+        // --------------------------------------
+        // Mostrar título del DDS
+        // --------------------------------------
+        document.getElementById("tituloDDS").innerText = data.titulo;
+
+        // --------------------------------------
+        // Mostrar PDF
+        // --------------------------------------
+        document.getElementById("pdfLink").href = data.pdf;
+
+    } catch (error) {
+
+        // --------------------------------------
+        // Mostrar error en consola
+        // --------------------------------------
+        console.error("Error:", error);
+
+        alert("❌ Error al conectar con el servidor");
+
+    }
+}
+
+</script>
+
+</body>
+</html>
