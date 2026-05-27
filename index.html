@@ -1,100 +1,132 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>DDS Contratistas</title>
+<meta charset="UTF-8">
+<title>DDS Contratistas</title>
 </head>
+
 <body>
 
-<h2>Documento DDS</h2>
-<a id="linkPDF" href="#" target="_blank">Abrir PDF</a>
+<h2>Ingreso</h2>
+<input id="nombre" placeholder="Nombre"><br>
+<input id="dni" placeholder="DNI"><br>
+<button onclick="cargarDDS()">Cargar DDS</button>
 
-<h3>Ingrese sus datos</h3>
-<input id="nombre" placeholder="Nombre completo"><br>
-<input id="empresa" placeholder="Empresa"><br>
+<div id="contenido" style="display:none;">
+
+<h2 id="tituloDDS"></h2>
+#Abrir PDF DDS</a>
 
 <h3>Evaluación</h3>
 <div id="preguntas"></div>
 
-<button onclick="enviar()">Enviar</button>
+<button onclick="enviar()">Enviar Evaluación</button>
+
+</div>
 
 <script>
-const flowURL = "PEGAR_URL_FLOW_ACA";
 
-let preguntas = [
-    {
-        texto: "¿Debe usar EPP?",
-        opciones: ["Sí", "No"],
-        correcta: "Sí"
-    },
-    {
-        texto: "¿Se debe señalizar?",
-        opciones: ["Sí", "No"],
-        correcta: "Sí"
-    },
-    {
-        texto: "¿Se permite sin casco?",
-        opciones: ["Sí", "No"],
-        correcta: "No"
-    }
-];
+const flowObtener = "URL_FLOW_1";
+const flowGuardar = "URL_FLOW_2";
 
-function cargarPreguntas() {
-    let contenedor = document.getElementById("preguntas");
+let preguntasData = [];
+let ordenDDS = 0;
 
-    preguntas.forEach((p, index) => {
-        let html = `<p>${p.texto}</p>`;
-        p.opciones.forEach(op => {
-            html += `<input type="radio" name="p${index}" value="${op}">${op}<br>`;
-        });
-        contenedor.innerHTML += html;
+// ====================== CARGAR DDS ===================
+async function cargarDDS() {
+
+    let nombre = document.getElementById("nombre").value;
+    let dni = document.getElementById("dni").value;
+
+    let res = await fetch(flowObtener, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({nombre, dni})
+    });
+
+    let data = await res.json();
+
+    ordenDDS = data.ordenDDS;
+    preguntasData = data.preguntas;
+
+    document.getElementById("contenido").style.display = "block";
+    document.getElementById("tituloDDS").innerText = data.titulo;
+
+    document.getElementById("pdfLink").href = data.pdf;
+
+    renderPreguntas();
+}
+
+// ====================== RENDER ===================
+function renderPreguntas() {
+    let cont = document.getElementById("preguntas");
+    cont.innerHTML = "";
+
+    preguntasData.forEach((p,i) => {
+        let div =
+        `<p>${p.texto}</p>` +
+        p.opciones.map(op =>
+            `<input type="radio" name="p${i}" value="${op}">${op}<br>`
+        ).join("");
+
+        cont.innerHTML += div;
     });
 }
 
-function calcularPuntaje() {
-    let correctas = 0;
+// ====================== CALCULO ===================
+function calcular() {
 
-    preguntas.forEach((p, i) => {
-        let elegido = document.querySelector(`input[name="p${i}"]:checked`);
-        if (elegido && elegido.value === p.correcta) {
+    let correctas = 0;
+    let idsCorrectas = [];
+
+    preguntasData.forEach((p,i) => {
+        let sel = document.querySelector(`input[name="p${i}"]:checked`);
+        if (sel && sel.value === p.correcta){
             correctas++;
+            idsCorrectas.push(p.id);
         }
     });
 
-    let puntaje = (correctas / preguntas.length) * 100;
-    return Math.round(puntaje);
+    let puntaje = Math.round((correctas / preguntasData.length)*100);
+
+    return {
+        puntaje,
+        aprobado: puntaje >= 70,
+        csv: idsCorrectas.join(",")
+    };
 }
 
-function enviar() {
+// ====================== ENVIAR ===================
+async function enviar() {
+
     let nombre = document.getElementById("nombre").value;
-    let empresa = document.getElementById("empresa").value;
+    let dni = document.getElementById("dni").value;
 
-    let puntaje = calcularPuntaje();
-    let aprobado = puntaje >= 70;
+    let res = calcular();
 
-    fetch(flowURL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+    await fetch(flowGuardar, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-            nombre: nombre,
-            empresa: empresa,
-            puntaje: puntaje,
-            aprobado: aprobado,
-            ordenDDS: 1
+            nombre,
+            dni,
+            ordenDDS,
+            puntaje: res.puntaje,
+            aprobado: res.aprobado,
+            correctas: res.csv
         })
     });
 
-    alert("Puntaje: " + puntaje + "%");
+    alert("Puntaje: " + res.puntaje + "%");
 
-    if (!aprobado) {
-        alert("Debe volver a intentarlo");
+    if(res.aprobado){
+        alert("APROBADO ✅");
+        location.reload();
+    } else {
+        alert("DESAPROBADO ❌ - Volvé a intentar");
     }
 }
 
-cargarPreguntas();
 </script>
-
 </body>
 </html>
