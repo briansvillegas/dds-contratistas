@@ -6,127 +6,13 @@
 </head>
 
 <body>
+<p>Bienvenido. Ingresá tus datos:</p>
 
-<h2>Ingreso</h2>
-<input id="nombre" placeholder="Nombre"><br>
-<input id="dni" placeholder="DNI"><br>
-<button onclick="cargarDDS()">Cargar DDS</button>
+<input placeholder="Nombre completo"><br><br>
+<input placeholder="DNI"><br><br>
 
-<div id="contenido" style="display:none;">
+<button>Ingresar</button>
 
-<h2 id="tituloDDS"></h2>
-#Abrir PDF DDS</a>
 
-<h3>Evaluación</h3>
-<div id="preguntas"></div>
-
-<button onclick="enviar()">Enviar Evaluación</button>
-
-</div>
-
-<script>
-
-const flowObtener = "URL_FLOW_1";
-const flowGuardar = "URL_FLOW_2";
-
-let preguntasData = [];
-let ordenDDS = 0;
-
-// ====================== CARGAR DDS ===================
-async function cargarDDS() {
-
-    let nombre = document.getElementById("nombre").value;
-    let dni = document.getElementById("dni").value;
-
-    let res = await fetch(flowObtener, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({nombre, dni})
-    });
-
-    let data = await res.json();
-
-    ordenDDS = data.ordenDDS;
-    preguntasData = data.preguntas;
-
-    document.getElementById("contenido").style.display = "block";
-    document.getElementById("tituloDDS").innerText = data.titulo;
-
-    document.getElementById("pdfLink").href = data.pdf;
-
-    renderPreguntas();
-}
-
-// ====================== RENDER ===================
-function renderPreguntas() {
-    let cont = document.getElementById("preguntas");
-    cont.innerHTML = "";
-
-    preguntasData.forEach((p,i) => {
-        let div =
-        `<p>${p.texto}</p>` +
-        p.opciones.map(op =>
-            `<input type="radio" name="p${i}" value="${op}">${op}<br>`
-        ).join("");
-
-        cont.innerHTML += div;
-    });
-}
-
-// ====================== CALCULO ===================
-function calcular() {
-
-    let correctas = 0;
-    let idsCorrectas = [];
-
-    preguntasData.forEach((p,i) => {
-        let sel = document.querySelector(`input[name="p${i}"]:checked`);
-        if (sel && sel.value === p.correcta){
-            correctas++;
-            idsCorrectas.push(p.id);
-        }
-    });
-
-    let puntaje = Math.round((correctas / preguntasData.length)*100);
-
-    return {
-        puntaje,
-        aprobado: puntaje >= 70,
-        csv: idsCorrectas.join(",")
-    };
-}
-
-// ====================== ENVIAR ===================
-async function enviar() {
-
-    let nombre = document.getElementById("nombre").value;
-    let dni = document.getElementById("dni").value;
-
-    let res = calcular();
-
-    await fetch(flowGuardar, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-            nombre,
-            dni,
-            ordenDDS,
-            puntaje: res.puntaje,
-            aprobado: res.aprobado,
-            correctas: res.csv
-        })
-    });
-
-    alert("Puntaje: " + res.puntaje + "%");
-
-    if(res.aprobado){
-        alert("APROBADO ✅");
-        location.reload();
-    } else {
-        alert("DESAPROBADO ❌ - Volvé a intentar");
-    }
-}
-
-</script>
 </body>
 </html>
