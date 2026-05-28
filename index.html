@@ -27,6 +27,8 @@
         📄 Abrir documento DDS
     </a>
 
+    <h3>Evaluación</h3>
+    <div id="preguntas"></div>
 </div>
 
 <script>
@@ -36,9 +38,9 @@
 // ==========================================
 const flowObtener = "https://default31211f7f7b404585b6ebb1270b0e63.e3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/e89f09c980424dbc968d85ff199b0815/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=P1YgIP0x2fSvdXWtEASRj-nUJhhmiKc3HDzkh1NxJ4A";
 
-// Variable global para guardar el DDS actual
-let ordenDDS = 0;
-
+// Variables globales
+let preguntasData = []; 
+let ordenDDS = 0; // para almacenar el DDS actual
 
 // ==========================================
 // FUNCIÓN CARGAR DDS
@@ -76,7 +78,6 @@ async function cargarDDS() {
                 nombre: nombre,
                 dni: dni
             })
-
         });
 
         // --------------------------------------
@@ -87,24 +88,20 @@ async function cargarDDS() {
         console.log("Respuesta del Flow:", data); // <-- PARA DEBUG
 
         // --------------------------------------
-        // Guardar el orden DDS
+        // Guardar datos
         // --------------------------------------
         ordenDDS = data.ordenDDS;
+        preguntasData = data.preguntas;
 
         // --------------------------------------
-        // Mostrar contenido DDS
+        // Mostrar DDS
         // --------------------------------------
         document.getElementById("contenidoDDS").style.display = "block";
-
-        // --------------------------------------
-        // Mostrar título del DDS
-        // --------------------------------------
         document.getElementById("tituloDDS").innerText = data.titulo;
-
-        // --------------------------------------
-        // Mostrar PDF
-        // --------------------------------------
         document.getElementById("pdfLink").href = data.pdf;
+        
+        // Renderizar preguntas
+        renderPreguntas();
 
     } catch (error) {
 
@@ -113,11 +110,41 @@ async function cargarDDS() {
         // --------------------------------------
         console.error("Error:", error);
 
-        alert("❌ Error al conectar con el servidor");
+        alert("❌ Error al cargar capacitación");
 
     }
 }
 
+
+// ==========================================
+// GENERAR PREGUNTAS DINÁMICAMENTE
+// ==========================================
+function renderPreguntas() {
+
+    let contenedor = document.getElementById("preguntas");
+    contenedor.innerHTML = "";
+
+    preguntasData.forEach((p, i) => {
+
+        let texto = p.TextoPregunta;
+        let opciones = p.Opciones.split(","); // Clave
+
+        let html = `<p><b>${texto}</b></p>`;
+
+        opciones.forEach(op => {
+
+            let opcionLimpia = op.trim(); // Elimina espacios
+
+            html += `
+                <input type="radio" name="p${i}" value="${opcionLimpia}">
+                ${opcionLimpia}<br>
+            `;
+        });
+
+        contenedor.innerHTML += html;
+    });
+}
+    
 </script>
 
 </body>
