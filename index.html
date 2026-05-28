@@ -221,11 +221,19 @@ async function enviarEvaluacion() {
             headers: {
                 "Content-Type": "application/json"
             },
-
+/*
             body: JSON.stringify({
                 nombre: nombre,
                 dni: dni,
                 ordenDDS: ordenDDS,
+                puntaje: resultado.puntaje,
+                aprobado: resultado.aprobado,
+                correctas: resultado.correctasCSV
+            })*/
+            body: JSON.stringify({
+                nombre: nombre,
+                dni: dni,
+                ordenDDS: parseInt(ordenDDS),   // CLAVE
                 puntaje: resultado.puntaje,
                 aprobado: resultado.aprobado,
                 correctas: resultado.correctasCSV
