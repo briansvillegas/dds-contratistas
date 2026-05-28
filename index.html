@@ -29,6 +29,12 @@
 
     <h3>Evaluación</h3>
     <div id="preguntas"></div>
+
+
+    <!-- Botón Enviar Evaluación -->
+    <br><br>
+    <button onclick="enviarEvaluacion()">Enviar evaluación</button>
+
 </div>
 
 <script>
@@ -115,7 +121,6 @@ async function cargarDDS() {
     }
 }
 
-
 // ==========================================
 // GENERAR PREGUNTAS DINÁMICAMENTE
 // ==========================================
@@ -143,6 +148,105 @@ function renderPreguntas() {
 
         contenedor.innerHTML += html;
     });
+}
+
+
+// ==========================================
+// CALCULAR PUNTAJE
+// ==========================================
+function calcularResultado() {
+
+    let correctas = 0;
+    let idsCorrectas = [];
+
+    preguntasData.forEach((p, i) => {
+
+        // Obtener la respuesta seleccionada
+        let seleccion = document.querySelector(`input[name="p${i}"]:checked`);
+
+        if (seleccion) {
+
+            let respuestaUsuario = seleccion.value.trim();
+            let respuestaCorrecta = p.OpcionCorrecta.trim();
+
+            // Comparar
+            if (respuestaUsuario === respuestaCorrecta) {
+                correctas++;
+
+                // Guardar IDPregunta (para CSV)
+                idsCorrectas.push(p.IDPregunta);
+            }
+        }
+    });
+
+    let total = preguntasData.length;
+    let puntaje = Math.round((correctas / total) * 100);
+
+    return {
+        puntaje,
+        aprobado: puntaje >= 70,
+        correctasCSV: idsCorrectas.join(",")
+    };
+}
+
+
+// ==========================================
+// ENVIAR EVALUACIÓN AL FLOW
+// ==========================================
+async function enviarEvaluacion() {
+
+    let nombre = document.getElementById("nombre").value;
+    let dni = document.getElementById("dni").value;
+
+    // Validar que se respondan todas
+    let respondidas = document.querySelectorAll("input[type=radio]:checked").length;
+
+    if (respondidas !== preguntasData.length) {
+        alert("⚠️ Debe responder todas las preguntas");
+        return;
+    }
+
+    // Calcular resultado
+    let resultado = calcularResultado();
+
+    alert("Puntaje: " + resultado.puntaje + "%");
+
+    try {
+
+        // Llamar al Flow
+        await fetch("URL_FLOW_GUARDAR", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                nombre: nombre,
+                dni: dni,
+                ordenDDS: ordenDDS,
+                puntaje: resultado.puntaje,
+                aprobado: resultado.aprobado,
+                correctas: resultado.correctasCSV
+            })
+
+        });
+
+        // Resultado final
+        if (resultado.aprobado) {
+            alert("✅ APROBADO");
+            location.reload(); // pasa al siguiente DDS
+        } else {
+            alert("❌ DESAPROBADO - Puede volver a intentar");
+        }
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Error al enviar evaluación");
+
+    }
 }
     
 </script>
