@@ -94,14 +94,14 @@ async function login() {
 // ==========================================
 function resetEvaluacion() {
 
-    // 1. Desmarcar todas las opciones
+    // Desmarcar todas las opciones
     let radios = document.querySelectorAll("input[type=radio]");
     radios.forEach(r => r.checked = false);
 
-    // 2. Limpiar resultado
+    // Limpiar resultado
     document.getElementById("resultado").innerHTML = "";
 
-    // 3. Volver a habilitar botón
+    // Volver a habilitar botón
     let boton = document.querySelector("button[onclick='enviarEvaluacion()']");
     boton.disabled = false;
 }
@@ -320,7 +320,9 @@ async function enviarEvaluacion() {
         // Resultado final
         if (resultado.aprobado) {
             alert("✅ APROBADO");
-            //location.reload(); // pasa al siguiente DDS
+            // Borrar resultado
+            document.getElementById("resultado").innerHTML = "";
+            // Cargar siguiente DDS
             setTimeout(() => cargarDDS(), 2000);
         } else {
             alert("❌ DESAPROBADO - Puede volver a intentar");
