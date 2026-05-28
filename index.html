@@ -1,344 +1,846 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>DDS Contratistas</title>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>DDS Contratistas – Loma Negra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+    <style>
+        /* ─── RESET & BASE ─── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --navy:       #1a3068;
+            --blue:       #2e5fa3;
+            --blue-light: #4a7fd4;
+            --accent:     #f5a623;
+            --bg:         #dde6f5;
+            --bg-card:    #ffffff;
+            --text:       #1a2a4a;
+            --muted:      #7a8fb0;
+            --border:     #c9d8ef;
+            --success:    #2e7d32;
+            --error:      #c62828;
+            --radius:     14px;
+            --shadow:     0 4px 20px rgba(26,48,104,.13);
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--bg);
+            font-family: 'Barlow', sans-serif;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── MOBILE SHELL ─── */
+        .app-shell {
+            max-width: 420px;
+            min-height: 100vh;
+            margin: 0 auto;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* ─── LOGIN SCREEN ─── */
+        #loginScreen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 56px 32px 36px;
+            min-height: 100vh;
+        }
+
+        .login-hero { text-align: center; }
+
+        .login-hero .eyebrow {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.22em;
+            color: var(--blue);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .login-hero h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: var(--navy);
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .badge-location {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 16px;
+            padding: 6px 16px;
+            background: #e8eef8;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--blue);
+            text-transform: uppercase;
+        }
+
+        /* ─── LOGIN FORM CARD ─── */
+        .login-card {
+            width: 100%;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px 24px;
+        }
+
+        .login-card h3 {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 18px;
+        }
+
+        .field-group { margin-bottom: 14px; }
+
+        .field-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .field-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Barlow', sans-serif;
+            font-size: 15px;
+            color: var(--text);
+            background: #f4f7fc;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .field-group input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(46,95,163,.12);
+            background: #fff;
+        }
+
+        /* ─── BUTTONS ─── */
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(46,95,163,.35);
+            transition: transform .15s, box-shadow .15s, opacity .15s;
+        }
+
+        .btn-primary:hover   { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46,95,163,.42); }
+        .btn-primary:active  { transform: translateY(0);    box-shadow: 0 2px 8px rgba(46,95,163,.3);  }
+        .btn-primary:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+        .btn-outline {
+            width: 100%;
+            padding: 13px;
+            background: transparent;
+            color: var(--blue);
+            border: 2px solid var(--blue);
+            border-radius: 999px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background .18s, color .18s;
+        }
+
+        .btn-outline:hover { background: var(--blue); color: #fff; }
+
+        /* ─── BRANDING FOOTER ─── */
+        .brand-footer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-loma {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            border: 2.5px solid var(--navy);
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .logo-loma svg { width: 40px; height: 40px; }
+
+        .brand-text { display: flex; flex-direction: column; }
+        .brand-text span:first-child { font-size: 13px; font-weight: 400; color: var(--text); }
+        .brand-text strong {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .brand-text strong svg { width: 18px; height: 18px; }
+
+        /* ─── MAIN APP SCREEN ─── */
+        #contenidoDDS { display: none; flex-direction: column; flex: 1; }
+
+        /* Top bar */
+        .topbar {
+            background: var(--navy);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar .welcome {
+            font-size: 12px;
+            color: rgba(255,255,255,.65);
+            font-weight: 500;
+        }
+        .topbar .welcome strong {
+            display: block;
+            font-size: 14px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .topbar-logo { width: 36px; height: 36px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; }
+        .topbar-logo svg { width: 28px; height: 28px; }
+
+        /* ─── CONTENT AREA ─── */
+        .content-area { padding: 20px 16px 32px; display: flex; flex-direction: column; gap: 16px; }
+
+        /* ─── NEXT TRAINING CARD ─── */
+        .training-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .training-card-header {
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            padding: 16px 20px 12px;
+        }
+
+        .training-card-header .label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.7);
+            margin-bottom: 4px;
+        }
+
+        .training-card-header .title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            line-height: 1.15;
+        }
+
+        .training-card-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+
+        .btn-doc {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 3px 12px rgba(46,95,163,.3);
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .btn-doc:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(46,95,163,.38); }
+        .btn-doc svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+        /* ─── QUESTIONS CARD ─── */
+        .eval-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .eval-card-header {
+            background: var(--navy);
+            padding: 12px 20px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .eval-card-body { padding: 4px 0; }
+
+        /* ─── QUESTION ITEM ─── */
+        .question-item {
+            padding: 18px 20px;
+            border-bottom: 1px solid #eef1f8;
+        }
+        .question-item:last-child { border-bottom: none; }
+
+        .question-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--navy);
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background .15s;
+            margin-bottom: 4px;
+            font-size: 14px;
+            color: var(--text);
+        }
+        .option-label:hover { background: #f0f5ff; }
+        .option-label:last-child { margin-bottom: 0; }
+
+        /* Custom radio */
+        .option-label input[type="radio"] { display: none; }
+
+        .radio-circle {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color .15s, background .15s;
+        }
+
+        .option-label input[type="radio"]:checked ~ .radio-circle {
+            border-color: var(--blue);
+            background: var(--blue);
+        }
+        .radio-circle::after {
+            content: '';
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            opacity: 0;
+            transition: opacity .15s;
+        }
+        .option-label input[type="radio"]:checked ~ .radio-circle::after { opacity: 1; }
+
+        /* ─── RESULT BOX ─── */
+        #resultado {
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-align: center;
+            display: none;
+        }
+
+        #resultado.aprobado { background: #e8f5e9; color: var(--success); border: 1.5px solid #a5d6a7; }
+        #resultado.desaprobado { background: #ffebee; color: var(--error); border: 1.5px solid #ef9a9a; }
+
+
+
+        .version-tag {
+            text-align: center;
+            font-size: 11px;
+            color: var(--muted);
+            padding: 4px 0 0;
+        }
+
+        /* ─── LOADER ─── */
+        .loader-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(26,48,104,.22);
+            backdrop-filter: blur(3px);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+        }
+        .loader-overlay.active { display: flex; }
+
+        .loader-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid var(--border);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loader-box p {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blue);
+            letter-spacing: 0.04em;
+        }
+
+        /* ─── TRANSITIONS ─── */
+        .screen-fade {
+            animation: fadeIn .35s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 360px) {
+            .login-hero h1 { font-size: 44px; }
+        }
+    </style>
+</head>
 <body>
 
-<h1>DDS Contratistas</h1>
+<div class="app-shell">
 
-<h3>Ingrese sus datos</h3>
+    <!-- ══════════════════════════════ -->
+    <!-- LOGIN SCREEN                  -->
+    <!-- ══════════════════════════════ -->
+    <div id="loginScreen">
+
+        <div class="login-hero">
+            <p class="eyebrow">Gestión de</p>
+            <h1>Seguridad</h1>
+            <span class="badge-location">APP INTERNA · LOMA NEGRA · ZAPALA</span>
+        </div>
+
+        <div class="login-card screen-fade">
+            <h3>Ingresá tus datos</h3>
+
+            <div class="field-group">
+                <label for="dni">DNI</label>
+                <input id="dni" type="number" inputmode="numeric" placeholder="Ej: 30123456" autocomplete="username">
+            </div>
+
+            <div class="field-group">
+                <label for="password">Contraseña</label>
+                <input id="password" type="password" placeholder="••••••••" autocomplete="current-password">
+            </div>
+
+            <br>
+            <button class="btn-primary" onclick="login()">Entrar</button>
+        </div>
+
+        <div class="brand-footer">
+            <!-- Loma Negra logo approximation -->
+            <div class="logo-loma">
+                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Hexagonal shape -->
+                    <polygon points="20,2 35,11 35,29 20,38 5,29 5,11" fill="#1a3068" stroke="#1a3068" stroke-width="1"/>
+                    <text x="20" y="24" text-anchor="middle" fill="white" font-family="'Barlow Condensed',sans-serif" font-weight="800" font-size="10">LOMA</text>
+                    <text x="20" y="33" text-anchor="middle" fill="white" font-family="'Barlow Condensed',sans-serif" font-weight="800" font-size="10">NEGRA</text>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span>Lo hacemos</span>
+                <strong>
+                    <!-- shield icon -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.5C16.5 22.15 20 17.25 20 12V6l-8-4z" fill="#f5a623"/>
+                        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Seguro
+                </strong>
+            </div>
+        </div>
+
+    </div>
 
 
-<input id="dni" placeholder="DNI"><br><br>
-<input id="password" type="password" placeholder="Contraseña"><br><br>
+    <!-- ══════════════════════════════ -->
+    <!-- MAIN APP (post-login)         -->
+    <!-- ══════════════════════════════ -->
+    <div id="contenidoDDS">
 
-<button onclick="login()">Ingresar</button>
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="welcome">
+                Bienvenido/a
+                <strong id="nombreUsuario">—</strong>
+            </div>
+            <div class="topbar-logo">
+                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="20,2 35,11 35,29 20,38 5,29 5,11" fill="#1a3068"/>
+                    <text x="20" y="24" text-anchor="middle" fill="white" font-family="'Barlow Condensed',sans-serif" font-weight="800" font-size="10">LOMA</text>
+                    <text x="20" y="33" text-anchor="middle" fill="white" font-family="'Barlow Condensed',sans-serif" font-weight="800" font-size="10">NEGRA</text>
+                </svg>
+            </div>
+        </div>
 
-<hr>
+        <div class="content-area">
 
-<!-- CONTENIDO DDS -->
-<div id="contenidoDDS" style="display:none;">
+            <!-- Training Card -->
+            <div class="training-card screen-fade">
+                <div class="training-card-header">
+                    <p class="label">Próxima capacitación</p>
+                    <p class="title" id="tituloDDS">—</p>
+                </div>
+                <div class="training-card-body">
+                    <a id="pdfLink" href="#" target="_blank" class="btn-doc">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="14 2 14 8 20 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 15h6M9 18h4" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Cargar Documento
+                    </a>
+                </div>
+            </div>
 
-    <h2 id="tituloDDS"></h2>
+            <!-- Evaluation Card -->
+            <div class="eval-card screen-fade" id="evalCard" style="display:none;">
+                <div class="eval-card-header">Evaluación</div>
+                <div class="eval-card-body">
+                    <div id="preguntas"></div>
+                </div>
 
-    <a id="pdfLink" href="#" target="_blank">
-        📄 Abrir documento DDS
-    </a>
+                <div style="padding: 16px 20px; display:flex; flex-direction:column; gap:10px;">
+                    <div id="resultado"></div>
+                    <button class="btn-primary" onclick="enviarEvaluacion()" id="btnEnviar">Enviar evaluación</button>
+                </div>
+            </div>
 
-    <h3>Evaluación</h3>
-    <div id="preguntas"></div>
+            <p class="version-tag">Versión v1.2</p>
 
+        </div>
 
-    <!-- Botón Enviar Evaluación -->
-    <br><br>
-    <button onclick="enviarEvaluacion()">Enviar evaluación</button>
+    </div>
 
-    <div id="resultado" style="margin-top:20px; font-weight:bold;"></div>
 </div>
 
+<!-- Loader -->
+<div class="loader-overlay" id="loader">
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <p>Cargando capacitación…</p>
+    </div>
+</div>
+
+
 <script>
+
+// ==========================================
+// HELPERS UI
+// ==========================================
+function showLoader() { document.getElementById("loader").classList.add("active"); }
+function hideLoader() { document.getElementById("loader").classList.remove("active"); }
 
 // ==========================================
 // LOGIN USUARIO
 // ==========================================
 async function login() {
-
-    let dni = document.getElementById("dni").value;
-    let password = document.getElementById("password").value;
+    let dni      = document.getElementById("dni").value.trim();
+    let password = document.getElementById("password").value.trim();
 
     if (!dni || !password) {
         alert("⚠️ Ingresar DNI y contraseña");
         return;
     }
 
-    try {
+    let btn = document.querySelector("#loginScreen .btn-primary");
+    btn.disabled = true;
+    btn.textContent = "Verificando…";
 
+    try {
         let response = await fetch("https://default31211f7f7b404585b6ebb1270b0e63.e3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/d15ee016a38445a6b81f5dc16625d6dd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=OeVFy8wx2kScvPORJmz5ocRNfUQcC8mwrdKfpE5RVGk", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                dni: dni,
-                password: password
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ dni, password })
         });
 
         let data = await response.json();
 
         if (!data.ok) {
             alert("❌ DNI o contraseña incorrectos");
+            btn.disabled = false;
+            btn.textContent = "Entrar";
             return;
         }
 
-        // ✅ Guardar usuario logueado
         window.usuario = data.usuario;
 
-        // ✅ Mostrar mensaje
-        alert("Bienvenido: " + data.usuario.NombreCompleto);
+        // Ocultar login, mostrar app
+        document.getElementById("loginScreen").style.display   = "none";
+        document.getElementById("contenidoDDS").style.display  = "flex";
+        document.getElementById("nombreUsuario").textContent   = data.usuario.NombreCompleto;
 
-        // ✅ Ahora sí cargar DDS
         cargarDDS();
 
     } catch (error) {
         console.error(error);
         alert("Error al iniciar sesión");
+        btn.disabled = false;
+        btn.textContent = "Entrar";
     }
+}
+
+// ==========================================
+// URL DEL FLOW
+// ==========================================
+const flowObtener = "https://default31211f7f7b404585b6ebb1270b0e63.e3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/e89f09c980424dbc968d85ff199b0815/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=P1YgIP0x2fSvdXWtEASRj-nUJhhmiKc3HDzkh1NxJ4A";
+
+let preguntasData = [];
+let ordenDDS      = 0;
+
+// ==========================================
+// CARGAR DDS
+// ==========================================
+async function cargarDDS() {
+    let nombre = usuario.NombreCompleto;
+    let dni    = usuario.DNI;
+
+    if (!nombre || !dni) { alert("⚠️ Sesión inválida"); return; }
+
+    showLoader();
+
+    try {
+        let response = await fetch(flowObtener, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nombre, dni })
+        });
+
+        let data = await response.json();
+        console.log("Flow response:", data);
+
+        ordenDDS      = data.ordenDDS;
+        preguntasData = data.preguntas;
+
+        document.getElementById("tituloDDS").innerText = data.titulo;
+        document.getElementById("pdfLink").href        = data.pdf;
+
+        // Mostrar card de evaluación y renderizar preguntas
+        document.getElementById("evalCard").style.display = "block";
+        renderPreguntas();
+
+    } catch (error) {
+        console.error("Error:", error);
+        alert("❌ Error al cargar capacitación");
+    } finally {
+        hideLoader();
+    }
+}
+
+// ==========================================
+// RENDERIZAR PREGUNTAS (estilo nuevo)
+// ==========================================
+function renderPreguntas() {
+    let contenedor = document.getElementById("preguntas");
+    contenedor.innerHTML = "";
+
+    preguntasData.forEach((p, i) => {
+        let texto   = p.TextoPregunta;
+        let opciones = p.Opciones.split(",");
+
+        let opcionesHTML = opciones.map(op => {
+            let opLimpia = op.trim();
+            return `
+                <label class="option-label">
+                    <input type="radio" name="p${i}" value="${opLimpia}">
+                    <span class="radio-circle"></span>
+                    ${opLimpia}
+                </label>
+            `;
+        }).join("");
+
+        contenedor.innerHTML += `
+            <div class="question-item">
+                <p class="question-text">${texto}</p>
+                ${opcionesHTML}
+            </div>
+        `;
+    });
 }
 
 // ==========================================
 // RESETEAR EVALUACIÓN
 // ==========================================
 function resetEvaluacion() {
+    document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
 
-    // Desmarcar todas las opciones
-    let radios = document.querySelectorAll("input[type=radio]");
-    radios.forEach(r => r.checked = false);
+    let res = document.getElementById("resultado");
+    res.innerHTML = "";
+    res.className = "";
+    res.style.display = "none";
 
-    // Limpiar resultado
-    document.getElementById("resultado").innerHTML = "";
-
-    // Volver a habilitar botón
-    let boton = document.querySelector("button[onclick='enviarEvaluacion()']");
-    boton.disabled = false;
+    document.getElementById("btnEnviar").disabled = false;
 }
-    
-// ==========================================
-// URL DEL FLOW (PEGAR LA REAL AQUÍ)
-// ==========================================
-const flowObtener = "https://default31211f7f7b404585b6ebb1270b0e63.e3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/e89f09c980424dbc968d85ff199b0815/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=P1YgIP0x2fSvdXWtEASRj-nUJhhmiKc3HDzkh1NxJ4A";
-
-// Variables globales
-let preguntasData = []; 
-let ordenDDS = 0; // para almacenar el DDS actual
-
-// ==========================================
-// FUNCIÓN CARGAR DDS
-// ==========================================
-async function cargarDDS() {
-
-    // --------------------------------------
-    // Obtener datos del usuario
-    // --------------------------------------
-    //let nombre = document.getElementById("nombre").value;
-    //let dni = document.getElementById("dni").value;
-    
-    let nombre = usuario.NombreCompleto;
-    let dni = usuario.DNI;
-
-
-    // --------------------------------------
-    // Validación básica
-    // --------------------------------------
-    if (!nombre || !dni) {
-        alert("⚠️ Debe ingresar nombre y DNI");
-        return;
-    }
-
-    try {
-
-        // --------------------------------------
-        // LLAMADA A POWER AUTOMATE (HTTP POST)
-        // --------------------------------------
-        let response = await fetch(flowObtener, {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                nombre: nombre,
-                dni: dni
-            })
-        });
-
-        // --------------------------------------
-        // Convertir respuesta a JSON
-        // --------------------------------------
-        let data = await response.json();
-
-        console.log("Respuesta del Flow:", data); // <-- PARA DEBUG
-
-        // --------------------------------------
-        // Guardar datos
-        // --------------------------------------
-        ordenDDS = data.ordenDDS;
-        preguntasData = data.preguntas;
-
-        // --------------------------------------
-        // Mostrar DDS
-        // --------------------------------------
-        document.getElementById("contenidoDDS").style.display = "block";
-        document.getElementById("tituloDDS").innerText = data.titulo;
-        document.getElementById("pdfLink").href = data.pdf;
-        
-        // Renderizar preguntas
-        renderPreguntas();
-
-    } catch (error) {
-
-        // --------------------------------------
-        // Mostrar error en consola
-        // --------------------------------------
-        console.error("Error:", error);
-
-        alert("❌ Error al cargar capacitación");
-
-    }
-}
-
-// ==========================================
-// GENERAR PREGUNTAS DINÁMICAMENTE
-// ==========================================
-function renderPreguntas() {
-
-    let contenedor = document.getElementById("preguntas");
-    contenedor.innerHTML = "";
-
-    preguntasData.forEach((p, i) => {
-
-        let texto = p.TextoPregunta;
-        let opciones = p.Opciones.split(","); // Clave
-
-        let html = `<p><b>${texto}</b></p>`;
-
-        opciones.forEach(op => {
-
-            let opcionLimpia = op.trim(); // Elimina espacios
-
-            html += `
-                <input type="radio" name="p${i}" value="${opcionLimpia}">
-                ${opcionLimpia}<br>
-            `;
-        });
-
-        contenedor.innerHTML += html;
-    });
-}
-
 
 // ==========================================
 // CALCULAR PUNTAJE
 // ==========================================
 function calcularResultado() {
-
-    let correctas = 0;
+    let correctas    = 0;
     let idsCorrectas = [];
 
     preguntasData.forEach((p, i) => {
-
-        // Obtener la respuesta seleccionada
         let seleccion = document.querySelector(`input[name="p${i}"]:checked`);
-
         if (seleccion) {
-
-            let respuestaUsuario = seleccion.value.trim();
+            let respuestaUsuario  = seleccion.value.trim();
             let respuestaCorrecta = p.OpcionCorrecta.trim();
-
-            // Comparar
             if (respuestaUsuario === respuestaCorrecta) {
                 correctas++;
-
-                // Guardar IDPregunta (para CSV)
                 idsCorrectas.push(p.IDPregunta);
             }
         }
     });
 
-    let total = preguntasData.length;
+    let total   = preguntasData.length;
     let puntaje = Math.round((correctas / total) * 100);
 
     return {
         puntaje,
-        aprobado: puntaje >= 70,
+        aprobado:     puntaje >= 70,
         correctasCSV: idsCorrectas.join(",")
     };
 }
 
-
 // ==========================================
-// ENVIAR EVALUACIÓN AL FLOW
+// ENVIAR EVALUACIÓN
 // ==========================================
 async function enviarEvaluacion() {
-    let boton = document.querySelector("button[onclick='enviarEvaluacion()']");
+    let boton = document.getElementById("btnEnviar");
     boton.disabled = true;
 
     let nombre = usuario.NombreCompleto;
-    let dni = usuario.DNI;
+    let dni    = usuario.DNI;
 
-   //let nombre = document.getElementById("nombre").value;
-   //let dni = document.getElementById("dni").value;
-
-    // Validar que se respondan todas
     let respondidas = document.querySelectorAll("input[type=radio]:checked").length;
-
     if (respondidas !== preguntasData.length) {
         alert("⚠️ Debe responder todas las preguntas");
+        boton.disabled = false;
         return;
     }
 
-    // Calcular resultado
     let resultado = calcularResultado();
 
-    //alert("Puntaje: " + resultado.puntaje + "%");
     let divResultado = document.getElementById("resultado");
-    
-    divResultado.innerHTML = `
-        Puntaje: ${resultado.puntaje}% <br>
-        Estado: ${resultado.aprobado ? "✅ APROBADO" : "❌ DESAPROBADO"}
+    divResultado.style.display = "block";
+    divResultado.className     = resultado.aprobado ? "aprobado" : "desaprobado";
+    divResultado.innerHTML     = `
+        Puntaje: ${resultado.puntaje}%<br>
+        ${resultado.aprobado ? "✅ APROBADO" : "❌ DESAPROBADO"}
     `;
-    
-    divResultado.style.color = resultado.aprobado ? "green" : "red";
+
+    // Scroll para que el resultado sea visible
+    divResultado.scrollIntoView({ behavior: "smooth", block: "center" });
 
     try {
-
-        // Llamar al Flow
         await fetch("https://default31211f7f7b404585b6ebb1270b0e63.e3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1c9b50bc1e0a40b4bfcc513a431ac0a3/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=FERZ-H9x79ChFuybsNSsebkbpgnMicZFA-zBeCndY48", {
-
             method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-            
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                nombre: nombre,
-                dni: dni,
-                ordenDDS: parseInt(ordenDDS),   // CLAVE
-                puntaje: resultado.puntaje,
-                aprobado: resultado.aprobado,
+                nombre,
+                dni,
+                ordenDDS:  parseInt(ordenDDS),
+                puntaje:   resultado.puntaje,
+                aprobado:  resultado.aprobado,
                 correctas: resultado.correctasCSV
             })
-
         });
 
-        // Resultado final
         if (resultado.aprobado) {
-            alert("✅ APROBADO");
-            // Borrar resultado
-            document.getElementById("resultado").innerHTML = "";
-            // Cargar siguiente DDS
-            setTimeout(() => cargarDDS(), 1000);
+            // Esperar 2 segundos para que el usuario vea el resultado antes de cargar la siguiente
+            setTimeout(() => {
+                divResultado.innerHTML = "";
+                divResultado.style.display = "none";
+                showLoader(); // Loader solo aquí, al cargar la próxima capacitación
+                cargarDDS();
+            }, 2000);
         } else {
-            alert("❌ DESAPROBADO - Puede volver a intentar");
-            // Resetear la evaluación
-            resetEvaluacion();
+            // Desaprobado: mostrar resultado y dejar que reintente
+            boton.disabled = false;
         }
 
     } catch (error) {
-
         console.error(error);
         alert("Error al enviar evaluación");
-
+        boton.disabled = false;
     }
 }
-    
-</script>
 
+// Enter key on login
+document.getElementById("password").addEventListener("keydown", e => {
+    if (e.key === "Enter") login();
+});
+
+</script>
 </body>
 </html>
