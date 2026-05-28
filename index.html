@@ -703,6 +703,12 @@ async function cargarDDS() {
 // ==========================================
 function renderPreguntas() {
     let contenedor = document.getElementById("preguntas");
+    // Nuevas lineas
+    let res = document.getElementById("resultado");
+    res.innerHTML = "";
+    res.style.display = "none";
+    res.className = "";
+    
     contenedor.innerHTML = "";
 
     preguntasData.forEach((p, i) => {
