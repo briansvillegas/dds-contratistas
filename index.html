@@ -832,7 +832,12 @@ async function enviarEvaluacion() {
             }, 2000);
         } else {
             // Desaprobado: mostrar resultado y dejar que reintente
-            boton.disabled = false;
+            setTimeout(() => {
+                // ✅ Reset completo
+                resetEvaluacion();
+            }, 1500); // espera 2 segundos para que vea el resultado
+            
+            //boton.disabled = false;
         }
 
     } catch (error) {
