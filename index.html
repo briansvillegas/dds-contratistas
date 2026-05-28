@@ -11,10 +11,11 @@
 
 <h3>Ingrese sus datos</h3>
 
-<input id="nombre" placeholder="Nombre completo"><br><br>
-<input id="dni" placeholder="DNI"><br><br>
 
-<button onclick="cargarDDS()">Cargar DDS</button>
+<input id="dni" placeholder="DNI"><br><br>
+<input id="password" type="password" placeholder="Contraseña"><br><br>
+
+<button onclick="login()">Ingresar</button>
 
 <hr>
 
@@ -40,6 +41,54 @@
 
 <script>
 
+// ==========================================
+// LOGIN USUARIO
+// ==========================================
+async function login() {
+
+    let dni = document.getElementById("dni").value;
+    let password = document.getElementById("password").value;
+
+    if (!dni || !password) {
+        alert("⚠️ Ingresar DNI y contraseña");
+        return;
+    }
+
+    try {
+
+        let response = await fetch("https://default31211f7f7b404585b6ebb1270b0e63.e3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/d15ee016a38445a6b81f5dc16625d6dd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=OeVFy8wx2kScvPORJmz5ocRNfUQcC8mwrdKfpE5RVGk", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                dni: dni,
+                password: password
+            })
+        });
+
+        let data = await response.json();
+
+        if (!data.ok) {
+            alert("❌ DNI o contraseña incorrectos");
+            return;
+        }
+
+        // ✅ Guardar usuario logueado
+        window.usuario = data.usuario;
+
+        // ✅ Mostrar mensaje
+        alert("Bienvenido: " + data.usuario.NombreCompleto);
+
+        // ✅ Ahora sí cargar DDS
+        cargarDDS();
+
+    } catch (error) {
+        console.error(error);
+        alert("Error al iniciar sesión");
+    }
+}
+    
 // ==========================================
 // URL DEL FLOW (PEGAR LA REAL AQUÍ)
 // ==========================================
