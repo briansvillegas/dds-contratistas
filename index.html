@@ -106,8 +106,12 @@ async function cargarDDS() {
     // --------------------------------------
     // Obtener datos del usuario
     // --------------------------------------
-    let nombre = document.getElementById("nombre").value;
-    let dni = document.getElementById("dni").value;
+    //let nombre = document.getElementById("nombre").value;
+    //let dni = document.getElementById("dni").value;
+    
+    let nombre = usuario.NombreCompleto;
+    let dni = usuario.DNI;
+
 
     // --------------------------------------
     // Validación básica
@@ -247,8 +251,11 @@ async function enviarEvaluacion() {
     let boton = document.querySelector("button[onclick='enviarEvaluacion()']");
     boton.disabled = true;
 
-    let nombre = document.getElementById("nombre").value;
-    let dni = document.getElementById("dni").value;
+    let nombre = usuario.NombreCompleto;
+    let dni = usuario.DNI;
+
+   //let nombre = document.getElementById("nombre").value;
+   //let dni = document.getElementById("dni").value;
 
     // Validar que se respondan todas
     let respondidas = document.querySelectorAll("input[type=radio]:checked").length;
