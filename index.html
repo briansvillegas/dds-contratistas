@@ -625,7 +625,7 @@ async function login() {
 const flowObtener = "https://default31211f7f7b404585b6ebb1270b0e63.e3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/e89f09c980424dbc968d85ff199b0815/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=P1YgIP0x2fSvdXWtEASRj-nUJhhmiKc3HDzkh1NxJ4A";
 
 let preguntasData = [];
-let ordenDDS      = 0;
+let idDocumento   = null;
 
 // ==========================================
 // CARGAR DDS
@@ -648,7 +648,7 @@ async function cargarDDS() {
         let data = await response.json();
         console.log("Flow response:", data);
 
-        ordenDDS      = data.ordenDDS;
+        idDocumento   = data.idDocumento;
         preguntasData = data.preguntas;
 
         document.getElementById("tituloDDS").innerText = data.titulo;
@@ -783,7 +783,7 @@ async function enviarEvaluacion() {
             body: JSON.stringify({
                 nombre,
                 dni,
-                ordenDDS:  parseInt(ordenDDS),
+                idDocumento:  parseInt(idDocumento),
                 puntaje:   resultado.puntaje,
                 aprobado:  resultado.aprobado,
                 correctas: resultado.correctasCSV
