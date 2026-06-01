@@ -658,6 +658,9 @@ async function cargarDDS() {
         document.getElementById("evalCard").style.display = "block";
         renderPreguntas();
 
+        // Habilitar botón para nuevo DDS
+        document.getElementById("btnEnviar").disabled = false;
+        
     } catch (error) {
         console.error("Error:", error);
         alert("❌ Error al cargar capacitación");
