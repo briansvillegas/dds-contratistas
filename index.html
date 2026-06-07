@@ -786,6 +786,7 @@ async function enviarEvaluacion() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 nombre,
+                correo,
                 dni,
                 idDocumento:  parseInt(idDocumento),
                 puntaje:   resultado.puntaje,
