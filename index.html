@@ -756,7 +756,7 @@ function calcularResultado() {
 async function enviarEvaluacion() {
     let boton = document.getElementById("btnEnviar");
     boton.disabled = true;
-
+    let correo = usuario.Correo;
     let nombre = usuario.NombreCompleto;
     let dni    = usuario.DNI;
 
